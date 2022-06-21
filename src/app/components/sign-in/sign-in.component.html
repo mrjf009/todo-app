@@ -1,1 +1,57 @@
-<p>sign-in works!</p>
+<div class="login-module">
+  <div class="login-content">
+    <h3>Sign In</h3>
+    <form class="form">
+      <mat-form-field class="form-field" appearance="fill">
+        <input
+          type="text"
+          matInput
+          [formControl]="usernameFormControl"
+          [errorStateMatcher]="matcher"
+          placeholder="Username"
+          #userName
+        />
+        <mat-error
+          class="error"
+          *ngIf="usernameFormControl.hasError('minlength') && !usernameFormControl.hasError('required')"
+        >
+          Username is too short
+        </mat-error>
+        <mat-error class="error" *ngIf="usernameFormControl.hasError('required')">
+          Username is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="form-field" appearance="fill">
+        <input
+          type="password"
+          matInput
+          [formControl]="passwordFormControl"
+          [errorStateMatcher]="matcher"
+          placeholder="Password"
+          #userPassword
+        />
+        <mat-error
+          class="error"
+          *ngIf="passwordFormControl.hasError('minlength') && !passwordFormControl.hasError('required')"
+        >
+          Password is too short
+        </mat-error>
+        <mat-error class="error" *ngIf="passwordFormControl.hasError('required')">
+          Password is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+    </form>
+
+    <div>
+      <input
+        type="button"
+        class="button"
+        value="Log in"
+        (click)="authService.SignIn(userName.value, userPassword.value)"
+      />
+    </div>
+    <div class="redirectToLogin">
+      <span>Don't have an account?<span class="redirect link" routerLink="/register-user"> Sign Up</span></span>
+    </div>
+  </div>
+</div>
