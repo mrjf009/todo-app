@@ -12,6 +12,9 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { SignInComponent } from './components/sign-in/sign-in.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { AuthService } from './shared/services/auth.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [AppComponent, DashboardComponent, SignInComponent, SignUpComponent],
@@ -23,6 +26,10 @@ import { AuthService } from './shared/services/auth.service';
     AngularFirestoreModule,
     AngularFireStorageModule,
     AngularFireDatabaseModule,
+    BrowserAnimationsModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    FormsModule,
   ],
   providers: [AuthService],
   bootstrap: [AppComponent],
