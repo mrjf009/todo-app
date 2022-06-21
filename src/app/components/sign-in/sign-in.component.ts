@@ -15,7 +15,6 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   styleUrls: ['./sign-in.component.scss'],
 })
 export class SignInComponent implements OnInit {
-  emailFormControl = new FormControl('', [Validators.required, Validators.email]);
   usernameFormControl = new FormControl('', [Validators.required, Validators.minLength(4)]);
   passwordFormControl = new FormControl('', [Validators.required, Validators.minLength(8)]);
 
