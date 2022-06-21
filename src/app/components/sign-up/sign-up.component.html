@@ -1,1 +1,54 @@
-<p>sign-up works!</p>
+<div class="register-module">
+  <div class="register-content">
+    <h3>Sign Up</h3>
+    <form class="form">
+      <mat-form-field class="form-field" appearance="fill">
+        <input
+          type="email"
+          matInput
+          [formControl]="emailFormControl"
+          [errorStateMatcher]="matcher"
+          placeholder="Email"
+          #userEmail
+        />
+        <mat-error class="error" *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+          Invalid email
+        </mat-error>
+        <mat-error class="error" *ngIf="emailFormControl.hasError('required')">
+          Email is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="form-field" appearance="fill">
+        <input
+          type="password"
+          matInput
+          [formControl]="passwordFormControl"
+          [errorStateMatcher]="matcher"
+          placeholder="Password"
+          #userPwd
+        />
+        <mat-error
+          class="error"
+          *ngIf="passwordFormControl.hasError('minlength') && !passwordFormControl.hasError('required')"
+        >
+          Password is too short
+        </mat-error>
+        <mat-error class="error" *ngIf="passwordFormControl.hasError('required')">
+          Password is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+    </form>
+
+    <div>
+      <input
+        type="button"
+        class="button"
+        value="Sign Up"
+        (click)="authService.SignUp(userEmail.value, userPwd.value)"
+      />
+    </div>
+    <div class="redirectToregister">
+      <span>Don't have an account?<span class="redirect link" routerLink="/sign-in"> Sign In</span></span>
+    </div>
+  </div>
+</div>
