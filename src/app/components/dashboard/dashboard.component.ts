@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
+import { BehaviorSubject, Observable } from 'rxjs/';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 
 import { AuthService } from '../../shared/services/auth.service';
 import { Task } from '../../shared/services/task';
 import { TaskDialogComponent } from '../task-dialog/task-dialog.component';
 import { TaskDialogResult } from '../task-dialog/task-dialog.component';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
-import { BehaviorSubject } from 'rxjs/';
+import { User } from '../../shared/services/user';
 
 const getObservable = (collection: AngularFirestoreCollection<Task>) => {
   const subject = new BehaviorSubject<Task[]>([]);
@@ -22,9 +23,9 @@ const getObservable = (collection: AngularFirestoreCollection<Task>) => {
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
-  todo = getObservable(this.store.collection('todo'));
-  inProgress = getObservable(this.store.collection('inProgress'));
-  done = getObservable(this.store.collection('done'));
+  todo = getObservable(this.store.collection('todo')) as Observable<Task[]>;
+  inProgress = getObservable(this.store.collection('inProgress')) as Observable<Task[]>;
+  done = getObservable(this.store.collection('done')) as Observable<Task[]>;
 
   constructor(private dialog: MatDialog, private store: AngularFirestore, public authService: AuthService) {}
 
