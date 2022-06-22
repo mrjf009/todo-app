@@ -1,9 +1,10 @@
 import { Injectable, NgZone } from '@angular/core';
 import { User } from '../services/user';
-import * as auth from 'firebase/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -13,7 +14,8 @@ export class AuthService {
     public afs: AngularFirestore, // Inject Firestore service
     public afAuth: AngularFireAuth, // Inject Firebase auth service
     public router: Router,
-    public ngZone: NgZone // NgZone service to remove outside scope warning
+    public ngZone: NgZone, // NgZone service to remove outside scope warning
+    public db: AngularFireDatabase
   ) {
     /* Saving user data in localstorage when 
     logged in and setting up null when logged out */
@@ -84,7 +86,6 @@ export class AuthService {
     const userData: User = {
       uid: user.uid,
       email: user.email,
-      displayName: user.displayName,
     };
     return userRef.set(userData, {
       merge: true,
