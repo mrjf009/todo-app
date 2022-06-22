@@ -1,24 +1,21 @@
 <div class="login-module">
   <div class="login-content">
-    <h3>Sign In</h3>
+    <h1>Sign In</h1>
     <form class="form">
       <mat-form-field class="form-field" appearance="fill">
         <input
-          type="text"
+          type="email"
           matInput
-          [formControl]="usernameFormControl"
+          [formControl]="emailFormControl"
           [errorStateMatcher]="matcher"
-          placeholder="Username"
-          #userName
+          placeholder="Email"
+          #userEmail
         />
-        <mat-error
-          class="error"
-          *ngIf="usernameFormControl.hasError('minlength') && !usernameFormControl.hasError('required')"
-        >
-          Username is too short
+        <mat-error class="error" *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+          Invalid email
         </mat-error>
-        <mat-error class="error" *ngIf="usernameFormControl.hasError('required')">
-          Username is <strong>required</strong>
+        <mat-error class="error" *ngIf="emailFormControl.hasError('required')">
+          Email is <strong>required</strong>
         </mat-error>
       </mat-form-field>
       <mat-form-field class="form-field" appearance="fill">
@@ -47,11 +44,11 @@
         type="button"
         class="button"
         value="Log in"
-        (click)="authService.SignIn(userName.value, userPassword.value)"
+        (click)="authService.SignIn(userEmail.value, userPassword.value)"
       />
     </div>
     <div class="redirectToLogin">
-      <span>Don't have an account?<span class="redirect link" routerLink="/register-user"> Sign Up</span></span>
+      <span>Have an account?<span class="redirect link" routerLink="/register-user"> Sign Up</span></span>
     </div>
   </div>
 </div>
