@@ -4,6 +4,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
+import { authInstanceFactory } from '@angular/fire/auth/auth.module';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +18,17 @@ export class AuthService {
     public ngZone: NgZone, // NgZone service to remove outside scope warning
     public db: AngularFireDatabase
   ) {
+    afAuth.onAuthStateChanged((user) => {
+      if (user) {
+        this.userData = user;
+        localStorage.setItem('user', JSON.stringify(this.userData));
+        JSON.parse(localStorage.getItem('user')!);
+      } else {
+        localStorage.removeItem('user');
+      }
+      console.log(user?.uid);
+    });
+
     /* Saving user data in localstorage when 
     logged in and setting up null when logged out */
     this.afAuth.authState.subscribe((user) => {
@@ -62,7 +74,7 @@ export class AuthService {
   // Returns true when user is looged in and email is verified
   get isLoggedIn(): boolean {
     const user = JSON.parse(localStorage.getItem('user')!);
-    return user !== null && user.emailVerified !== false ? true : false;
+    return user !== null;
   }
   // Auth logic to run auth providers
   AuthLogin(provider: any) {
@@ -95,7 +107,8 @@ export class AuthService {
   SignOut() {
     return this.afAuth.signOut().then(() => {
       localStorage.removeItem('user');
-      this.router.navigate(['sign-in']);
+      window.location.reload();
+      // this.router.navigateByUrl('dashboard');
     });
   }
 }
