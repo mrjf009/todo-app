@@ -22,7 +22,7 @@
       <span class="link" routerLink="/sign-in"> Sign In</span> to get access to <strong>"To do list app!"</strong>
     </div>
   </section>
-  <section>
+  <section class="unauthorized-content" *ngIf="authService.userData as user">
     <div class="content-wrapper">
       <button (click)="newTask()" mat-button><mat-icon>add</mat-icon> Add Task</button>
 
