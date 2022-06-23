@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, Observable } from 'rxjs/';
+import { BehaviorSubject } from 'rxjs/';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 
 import { AuthService } from '../../shared/services/auth.service';
 import { Task } from '../../shared/services/task';
 import { TaskDialogComponent } from '../task-dialog/task-dialog.component';
 import { TaskDialogResult } from '../task-dialog/task-dialog.component';
-import { User } from '../../shared/services/user';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 const getObservable = (collection: AngularFirestoreCollection<Task>) => {
   const subject = new BehaviorSubject<Task[]>([]);
@@ -17,17 +17,26 @@ const getObservable = (collection: AngularFirestoreCollection<Task>) => {
   });
   return subject;
 };
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
-  todo = getObservable(this.store.collection('todo')) as Observable<Task[]>;
-  inProgress = getObservable(this.store.collection('inProgress')) as Observable<Task[]>;
-  done = getObservable(this.store.collection('done')) as Observable<Task[]>;
+  user = JSON.parse(localStorage.getItem('user')!);
+  uid = this.user?.uid;
 
-  constructor(private dialog: MatDialog, private store: AngularFirestore, public authService: AuthService) {}
+  todo = getObservable(this.store.collection('users/' + this.uid + '/todo'));
+  inProgress = getObservable(this.store.collection('users/' + this.uid + '/inProgress'));
+  done = getObservable(this.store.collection('users/' + this.uid + '/done'));
+
+  constructor(
+    private dialog: MatDialog,
+    private store: AngularFirestore,
+    public authService: AuthService,
+    public afAuth: AngularFireAuth
+  ) {}
 
   newTask(): void {
     const dialogRef = this.dialog.open(TaskDialogComponent, {
@@ -40,9 +49,11 @@ export class DashboardComponent implements OnInit {
       if (!result) {
         return;
       }
-      this.store.collection('todo').add(result.task);
+      this.store.collection('users/' + this.uid + '/todo').add(result.task);
     });
   }
+
+  path = 'users/' + this.uid + '/';
 
   editTask(list: 'done' | 'todo' | 'inProgress', task: Task): void {
     const dialogRef = this.dialog.open(TaskDialogComponent, {
@@ -57,9 +68,15 @@ export class DashboardComponent implements OnInit {
         return;
       }
       if (result.delete) {
-        this.store.collection(list).doc(task.id).delete();
+        this.store
+          .collection(this.path + list)
+          .doc(task.id)
+          .delete();
       } else {
-        this.store.collection(list).doc(task.id).update(task);
+        this.store
+          .collection(this.path + list)
+          .doc(task.id)
+          .update(task);
       }
     });
   }
@@ -74,14 +91,19 @@ export class DashboardComponent implements OnInit {
     const item = event.previousContainer.data[event.previousIndex];
     this.store.firestore.runTransaction(() => {
       const promise = Promise.all([
-        this.store.collection(event.previousContainer.id).doc(item.id).delete(),
-        this.store.collection(event.container.id).add(item),
+        this.store
+          .collection(this.path + event.previousContainer.id)
+          .doc(item.id)
+          .delete(),
+        this.store.collection(this.path + event.container.id).add(item),
       ]);
       return promise;
     });
     transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
   }
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log(this.uid);
+  }
 }
 
 // constructor(private dialog: MatDialog, private store: AngularFirestore, public authService: AuthService) {}
