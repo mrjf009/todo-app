@@ -5,7 +5,7 @@
     </div>
     <div>
       <div>
-        <h1>Welcome to "To do list app!"</h1>
+        <h1>Welcome to "To do list" app!</h1>
       </div>
       <div>
         <div>
@@ -16,15 +16,17 @@
       </div>
     </div>
   </section>
+
   <section class="unauthorized-content" *ngIf="!authService.userData as user">
     <div>
       Please, <span class="link" routerLink="/register-user"> Sign Up</span> or
       <span class="link" routerLink="/sign-in"> Sign In</span> to get access to <strong>"To do list app!"</strong>
     </div>
   </section>
-  <section class="unauthorized-content" *ngIf="authService.userData as user">
+  <section class="authorized-content" *ngIf="authService.userData as user">
     <div class="content-wrapper">
       <button (click)="newTask()" mat-button><mat-icon>add</mat-icon> Add Task</button>
+      <p>Double click task to edit/delete</p>
 
       <div class="container-wrapper">
         <div class="container">
