@@ -105,5 +105,3 @@ export class DashboardComponent implements OnInit {
     console.log(this.uid);
   }
 }
-
-// constructor(private dialog: MatDialog, private store: AngularFirestore, public authService: AuthService) {}
